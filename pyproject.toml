@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "multi-engine-stack-ibis"
+version = "0.1.0"
+description = ""
+authors = ["Hussain Sultan <hussain@letsql.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+ibis-framework = {git = "https://github.com/ibis-project/ibis.git", rev = "f15d033e8437c7b63f5cee5a8aff8273c9b0352a", extras = ["pandas", "duckdb"]}
+pandas = "^2.2.2"
+ipython = "^8.24.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
