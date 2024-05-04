@@ -450,7 +450,7 @@ polars = ["packaging (>=21.3,<25)", "polars (>=0.20.17,<1)"]
 postgres = ["psycopg2 (>=2.8.4,<3)"]
 pyspark = ["packaging (>=21.3,<25)", "pyspark (>=3,<4)"]
 risingwave = ["psycopg2 (>=2.8.4,<3)"]
-snowflake = ["snowflake-connector-python (>=3.0.2,<4,!=3.3.0b1)"]
+snowflake = ["snowflake-connector-python (>=3.0.2,!=3.3.0b1,<4)"]
 sqlite = ["regex (>=2021.7.6)"]
 trino = ["trino (>=0.321,<1)"]
 visualization = ["graphviz (>=0.16,<1)"]
@@ -471,6 +471,22 @@ files = [
     {file = "idna-3.7-py3-none-any.whl", hash = "sha256:82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0"},
     {file = "idna-3.7.tar.gz", hash = "sha256:028ff3aadf0609c1fd278d8ea3089299412a7a8b9bd005dd08b9f8285bcb5cfc"},
 ]
+
+[[package]]
+name = "ipdb"
+version = "0.13.13"
+description = "IPython-enabled pdb"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+files = [
+    {file = "ipdb-0.13.13-py3-none-any.whl", hash = "sha256:45529994741c4ab6d2388bfa5d7b725c2cf7fe9deffabdb8a6113aa5ed449ed4"},
+    {file = "ipdb-0.13.13.tar.gz", hash = "sha256:e3ac6018ef05126d442af680aad863006ec19d02290561ac88b8b1c0b0cfc726"},
+]
+
+[package.dependencies]
+decorator = {version = "*", markers = "python_version > \"3.6\""}
+ipython = {version = ">=7.31.1", markers = "python_version > \"3.6\""}
+tomli = {version = "*", markers = "python_version > \"3.6\" and python_version < \"3.11\""}
 
 [[package]]
 name = "ipython"
@@ -1189,6 +1205,17 @@ pure-eval = "*"
 tests = ["cython", "littleutils", "pygments", "pytest", "typeguard"]
 
 [[package]]
+name = "tomli"
+version = "2.0.1"
+description = "A lil' TOML parser"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
+    {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
+]
+
+[[package]]
 name = "tomlkit"
 version = "0.12.4"
 description = "Style preserving TOML library"
@@ -1278,4 +1305,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "1174874bcc78852222e4d198685d924973ae3ed1a63acdc868cf490b2e6d2bc5"
+content-hash = "210f5904b46c4fa2b9e4959317fe8a9072d9086132cc4ca03873185140f27e05"

@@ -12,6 +12,7 @@ ibis-framework = {git = "https://github.com/ibis-project/ibis.git", rev = "f15d0
 pandas = "^2.2.2"
 ipython = "^8.24.0"
 snowflake-connector-python = "^3.10.0"
+ipdb = "^0.13.13"
 
 
 [build-system]

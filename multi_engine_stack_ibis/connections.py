@@ -3,7 +3,6 @@ import os
 import ibis
 import snowflake.connector
 
-
 DEFAULT_ROLE = os.environ.get("SNOWFLAKE_ROLE")
 DEFAULT_WAREHOUSE = os.environ.get("SNOWFLAKE_WAREHOUSE")
 
