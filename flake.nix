@@ -20,7 +20,7 @@
       {
         packages = {
           myapp = mkPoetryApplication { 
-             projectDir = self;
+             projectDir = ./.;
              preferWheels = true;
              # https://github.com/nix-community/poetry2nix/blob/master/docs/edgecases.md#modulenotfounderror-no-module-named-packagename
              overrides = defaultPoetryOverrides.extend
