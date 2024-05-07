@@ -59,20 +59,19 @@ if __name__ == "__main__":
         .filter(_.row_number == 0)
     )
     data = pd.read_parquet("raw/orders.parquet")
-    backend = ibis.duckdb.connect()
-    backend.con.execute("CREATE TABLE orders as SELECT * from data")
+    duck_backend = ibis.duckdb.connect().create_table(data)
 
-    bound = replace_unbound(first_expr_for, backend)
+    bound = replace_unbound(first_expr_for, duck_backend)
     bound.to_parquet(p_staging)
     to_sql = ibis.to_sql(bound)
     result = bound.execute()
 
     second_expr_for = ibis.table(schema, name="orders")
-    backend = ibis.pandas.connect({"orders": result})
-    snow_con = make_ibis_snowflake_connection(database="MULTI_ENGINE", schema="PUBLIC", warehouse="COMPUTE_WH")
+    pandas_backend = ibis.pandas.connect({"orders": result})
+    snow_backend = make_ibis_snowflake_connection(database="MULTI_ENGINE", schema="PUBLIC", warehouse="COMPUTE_WH")
     
-    snow_con.create_table("T_ORDERS", schema=second_expr_for.schema(), temp=True)
-    snow_con.insert("T_ORDERS", backend.to_pyarrow(second_expr_for))
+    snow_backend.create_table("T_ORDERS", schema=second_expr_for.schema(), temp=True)
+    snow_backend.insert("T_ORDERS", pandas_backend.to_pyarrow(second_expr_for))
 
     third_expr_for = ibis.table(schema, name="T_ORDERS")
-    snow_con.execute(third_expr_for)
+    snow_backend.execute(third_expr_for)
