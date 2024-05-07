@@ -36,6 +36,8 @@ def make_ibis_snowflake_connection(
         execute_statement(con, f"USE ROLE {role}")
     if warehouse:
         execute_statement(con, f"USE WAREHOUSE {warehouse}")
+    if database:
+        execute_statement(con, f"USE DATABASE {database}")
     return con
 
 

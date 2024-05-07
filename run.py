@@ -3,6 +3,7 @@ import pathlib
 import ibis
 import ibis.backends.pandas.executor
 import ibis.expr.types.relations
+from multi_engine_stack_ibis.connections import make_ibis_snowflake_connection
 import pandas as pd
 from ibis import _
 
@@ -21,14 +22,14 @@ if __name__ == "__main__":
     )
     ibis.set_backend("pandas")
 
-    p_landing = pathlib.Path(f"landing.parquet")
-    p_raw = pathlib.Path("raw/orders.parquet")
+    p_staging = pathlib.Path(f"staging.parquet")
+    p_landing = pathlib.Path("raw/orders.parquet")
 
-    for p in (p_landing, p_raw):
+    for p in (p_staging, p_landing):
         if p.exists():
             p.unlink()
 
-    generate_random_data(p_raw)
+    generate_random_data(p_landing)
 
     expr = (
         ibis.read_parquet("raw/orders.parquet")
@@ -36,7 +37,7 @@ if __name__ == "__main__":
             row_number=ibis.row_number().over(group_by=[_.order_id], order_by=[_.dt])
         )
         .filter(_.row_number == 0)
-        .checkpoint_parquet(p_landing)
+        .checkpoint_parquet(p_staging)
         .create_table_snowflake("test_test")
     )
     schema = {
@@ -62,11 +63,16 @@ if __name__ == "__main__":
     backend.con.execute("CREATE TABLE orders as SELECT * from data")
 
     bound = replace_unbound(first_expr_for, backend)
+    bound.to_parquet(p_staging)
     to_sql = ibis.to_sql(bound)
     result = bound.execute()
 
     second_expr_for = ibis.table(schema, name="orders")
     backend = ibis.pandas.connect({"orders": result})
-    bound = replace_unbound(first_expr_for, backend)
-    bound.to_parquet(p_landing)
-    result = bound.execute()
+    snow_con = make_ibis_snowflake_connection(database="MULTI_ENGINE", schema="PUBLIC", warehouse="COMPUTE_WH")
+    
+    snow_con.create_table("T_ORDERS", schema=second_expr_for.schema(), temp=True)
+    snow_con.insert("T_ORDERS", backend.to_pyarrow(second_expr_for))
+
+    third_expr_for = ibis.table(schema, name="T_ORDERS")
+    snow_con.execute(third_expr_for)
