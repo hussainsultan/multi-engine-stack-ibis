@@ -59,7 +59,7 @@ def generate_random_data(path):
     # generate duplicates
     duplicated_orders = df[0:10].copy()
     duplicated_orders["quantity"] = duplicated_orders["quantity"] + 10
-    duplicated_orders = duplicated_orders.reset_index()
+    duplicated_orders = duplicated_orders.reset_index(drop=True)
     df = (
         pd.concat([df, duplicated_orders])
         .assign(order_id=lambda x: x["order_id"].astype("string"))
