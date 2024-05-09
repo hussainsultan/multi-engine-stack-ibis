@@ -41,14 +41,12 @@ if __name__ == "__main__":
         .create_table_snowflake("test_test")
     )
     schema = {
-        "level_0": "int64",
         "user_id": "int64",
         "dt": "timestamp",
         "order_id": "string",
         "quantity": "int64",
         "purchase_price": "float64",
         "sku": "string",
-        "index": "float64",
         "row_number": "int64",
     }
     first_expr_for = (
@@ -59,7 +57,8 @@ if __name__ == "__main__":
         .filter(_.row_number == 0)
     )
     data = pd.read_parquet("raw/orders.parquet")
-    duck_backend = ibis.duckdb.connect().create_table(data)
+    duck_backend = ibis.duckdb.connect() #.create_table(data)
+    duck_backend.con.execute("CREATE TABLE orders as SELECT * from data")
 
     bound = replace_unbound(first_expr_for, duck_backend)
     bound.to_parquet(p_staging)

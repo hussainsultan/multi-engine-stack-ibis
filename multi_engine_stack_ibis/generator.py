@@ -64,6 +64,6 @@ def generate_random_data(path):
         pd.concat([df, duplicated_orders])
         .assign(order_id=lambda x: x["order_id"].astype("string"))
         .assign(sku=lambda x: x.sku.astype("string"))
-        .reset_index()
+        .reset_index(drop=True)
     )
-    df.to_parquet(path)
+    df.to_parquet(path, index=False)
